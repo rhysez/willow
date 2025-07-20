@@ -3,12 +3,13 @@ use crate::visualiser::traverser::TreeTraverser;
 pub mod visualiser;
 
 fn main() {
-    let tree_traverser: TreeTraverser = TreeTraverser {
-        origin_path: String::from("~/"),
+    let origin = String::from("~/");
+
+    let tree_traverser = TreeTraverser {
+        origin_path: &origin,
         max_traversal_depth: 2,
         current_traversal_depth: 1,
-        current_file_name: String::from("Origin"),
     };
 
-    TreeTraverser::traverse()
+    tree_traverser.traverse();
 }
