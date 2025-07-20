@@ -7,7 +7,8 @@ pub struct TreeTraverser<'a> {
     pub max_traversal_depth: u32, // The maximum traversal depth allowed.
     pub current_traversal_depth: usize, // The current depth of the traversal at some point in time.
     pub accumulative_file_count: usize, // The total number of files found thus far.
-    pub accumulative_dir_count: usize, // The totla number of directories found thus far.
+    pub accumulative_dir_count: usize, // The total number of directories found thus far.
+    pub include_paths: bool,  // Whether the program should print entries as paths.
 }
 
 // TO DO
@@ -20,7 +21,11 @@ impl<'a> TreeTraverser<'a> {
         let entries = fs::read_dir(self.origin_path).unwrap();
         for entry in entries {
             let leaf_tag = "-".repeat(self.current_traversal_depth);
-            println!("|{}{}", &leaf_tag, entry.unwrap().file_name().display());
+            if self.include_paths {
+                println!("|{}{}", leaf_tag, entry.unwrap().path().display());
+            } else {
+                println!("|{}{}", leaf_tag, entry.unwrap().file_name().display());
+            }
             self.accumulative_file_count += 1;
         }
     }
