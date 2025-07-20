@@ -10,6 +10,7 @@ fn main() {
         max_traversal_depth: 2,
         current_traversal_depth: 1,
         accumulative_file_count: 0,
+        accumulative_dir_count: 0,
     };
 
     tree_traverser.traverse();
