@@ -5,7 +5,7 @@ pub mod visualiser;
 fn main() {
     let origin_path = String::from("./");
 
-    let tree_traverser = TreeTraverser {
+    let mut tree_traverser = TreeTraverser {
         origin_path: &origin_path,
         max_traversal_depth: 2,
         current_traversal_depth: 1,
@@ -13,4 +13,6 @@ fn main() {
     };
 
     tree_traverser.traverse();
+
+    println!("Found {} files.", &tree_traverser.accumulative_file_count)
 }
