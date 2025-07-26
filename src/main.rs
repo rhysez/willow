@@ -7,25 +7,30 @@ fn main() {
     // Using .collect() to create a collection of the iterator values in args.
     // Annotating as a vector to tell Rust that we want to store these in a vector.
     let args: Vec<String> = env::args().collect();
-    let (origin_path, include_paths) = parse_args(&args);
+    // Shadow args with our new args struct instance.
+    let args: Args = Args::new(&args);
 
-    let mut tree_traverser = TreeTraverser {
-        origin_path,
-        max_traversal_depth: 2,
-        current_traversal_depth: 1,
-        accumulative_file_count: 0,
-        accumulative_dir_count: 0,
-        include_paths,
-    };
+    // TODO: Replace magic numbers with meaningful named variables.
+    let mut tree_traverser = TreeTraverser::new(&args.path, 2, 1, 0, 0, &args.format_specifier);
 
     tree_traverser.traverse();
 
     println!("Found {} files.", &tree_traverser.accumulative_file_count)
 }
 
-fn parse_args(args: &[String]) -> (&str, &str) {
-    let path = &args[1];
-    let include_paths_specifier = &args[2];
+struct Args {
+    path: String,
+    format_specifier: String,
+}
 
-    (path, include_paths_specifier)
+impl Args {
+    fn new(args: &[String]) -> Args {
+        let path = args[1].clone();
+        let format_specifier = args[2].clone();
+
+        Args {
+            path,
+            format_specifier,
+        }
+    }
 }
