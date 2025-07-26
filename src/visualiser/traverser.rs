@@ -49,7 +49,7 @@ impl<'a> TreeTraverser<'a> {
         let entries = fs::read_dir(self.path).unwrap();
         for entry in entries {
             let indent = "-".repeat(self.current_traversal_depth);
-            if self.format_specifier == "paths" {
+            if self.format_specifier == "--paths" {
                 println!("|{}{}", indent, entry.unwrap().path().display());
             } else {
                 println!("|{}{}", indent, entry.unwrap().file_name().display());
