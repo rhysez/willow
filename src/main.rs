@@ -1,8 +1,8 @@
-use crate::defs::constants;
 use crate::visualiser::traverser::TreeTraverser;
+use config::Config;
 use std::env;
 
-pub mod defs;
+pub mod config;
 pub mod visualiser;
 
 fn main() {
@@ -29,39 +29,4 @@ fn main() {
     tree_traverser.traverse();
 
     println!("Found {} files.", &tree_traverser.accumulative_file_count)
-}
-
-struct Config {
-    path: String,
-    format_specifier: String,
-}
-
-impl Config {
-    fn new(args: &[String]) -> Config {
-        let min_arg_count = 3;
-        if args.len() < min_arg_count {
-            panic!("Insufficient arguments. Provide at least {min_arg_count} arguments.");
-        }
-
-        let mut path = String::from("./");
-        let path_index = 1;
-
-        let mut format_specifier = String::from("--names");
-        let format_index = 2;
-
-        if let Some(value) = args.get(path_index) {
-            let specified_path = String::from(value);
-            path = specified_path;
-        }
-
-        if let Some(value) = args.get(format_index) {
-            let specified_format = String::from(value);
-            format_specifier = specified_format;
-        }
-
-        Config {
-            path,
-            format_specifier,
-        }
-    }
 }

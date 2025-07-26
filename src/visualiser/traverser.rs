@@ -1,4 +1,5 @@
 use std::fs;
+use std::path::Path;
 
 // Using string slices so that struct does not take ownership.
 // Also passing generic lifetime that origin_path and current_file_name share.
@@ -50,11 +51,21 @@ impl<'a> TreeTraverser<'a> {
         for entry in entries {
             let indent = "-".repeat(self.current_traversal_depth);
             if self.format_specifier == "--paths" {
-                println!("|{}{}", indent, entry.unwrap().path().display());
+                println!("|{}{}", indent, entry.as_ref().unwrap().path().display());
             } else {
-                println!("|{}{}", indent, entry.unwrap().file_name().display());
+                println!(
+                    "|{}{}",
+                    indent,
+                    entry.as_ref().unwrap().file_name().display()
+                );
             }
-            self.accumulative_file_count += 1;
+
+            let this_path: &Path = Path::new(entry.as_ref().unwrap().path().to_str().unwrap());
+            if this_path.is_dir() {
+                self.accumulative_dir_count += 1;
+            } else {
+                self.accumulative_file_count += 1;
+            }
         }
     }
 }
