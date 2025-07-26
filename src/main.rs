@@ -28,5 +28,8 @@ fn main() {
 
     tree_traverser.traverse();
 
-    println!("Found {} files.", &tree_traverser.accumulative_file_count)
+    println!(
+        "Found {} files and {} directories while traversing.",
+        &tree_traverser.accumulative_file_count, &tree_traverser.accumulative_dir_count
+    );
 }

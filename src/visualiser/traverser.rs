@@ -49,19 +49,17 @@ impl<'a> TreeTraverser<'a> {
     pub fn traverse(&mut self) {
         let entries = fs::read_dir(self.path).unwrap();
         for entry in entries {
+            let entry = entry.unwrap();
+            let path = entry.path();
             let indent = "-".repeat(self.current_traversal_depth);
+
             if self.format_specifier == "--paths" {
-                println!("|{}{}", indent, entry.as_ref().unwrap().path().display());
+                println!("|{}{}", indent, entry.path().display());
             } else {
-                println!(
-                    "|{}{}",
-                    indent,
-                    entry.as_ref().unwrap().file_name().display()
-                );
+                println!("|{}{}", indent, entry.file_name().display());
             }
 
-            let this_path: &Path = Path::new(entry.as_ref().unwrap().path().to_str().unwrap());
-            if this_path.is_dir() {
+            if path.is_dir() {
                 self.accumulative_dir_count += 1;
             } else {
                 self.accumulative_file_count += 1;
