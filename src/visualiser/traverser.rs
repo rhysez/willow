@@ -15,7 +15,10 @@ pub struct TreeTraverser<'a> {
 // 1. Iterate through wd and print files. DONE
 // 2. Return file count to main function. DONE
 // 3. Add accumulative_dir_count and count the directories found.
-// 4. Iterate deeper into tree based on max_traversal_depth.
+// 4. Iterate deeper into tree based on max_traversal_depth. This should
+// probably be done by defining the max traversal depth in the main function, removing
+// it from the struct, and instantiating a new TreeTraverser for each depth level.
+// This may remove the complexity required to handle the depth logic in traverse().
 impl<'a> TreeTraverser<'a> {
     pub fn new(
         p_path: &'a str,

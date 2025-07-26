@@ -8,7 +8,7 @@ fn main() {
     // Annotating as a vector to tell Rust that we want to store these in a vector.
     let args: Vec<String> = env::args().collect();
     // Shadow args with our new args struct instance.
-    let args: Args = Args::new(&args);
+    let args: Config = Config::new(&args);
 
     // TODO: Replace magic numbers with meaningful named variables.
     let mut tree_traverser = TreeTraverser::new(&args.path, 2, 1, 0, 0, &args.format_specifier);
@@ -18,17 +18,17 @@ fn main() {
     println!("Found {} files.", &tree_traverser.accumulative_file_count)
 }
 
-struct Args {
+struct Config {
     path: String,
     format_specifier: String,
 }
 
-impl Args {
-    fn new(args: &[String]) -> Args {
+impl Config {
+    fn new(args: &[String]) -> Config {
         let path = args[1].clone();
         let format_specifier = args[2].clone();
 
-        Args {
+        Config {
             path,
             format_specifier,
         }
