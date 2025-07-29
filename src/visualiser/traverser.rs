@@ -1,31 +1,29 @@
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 // Using string slices so that struct does not take ownership.
 // Also passing generic lifetime that origin_path and current_file_name share.
 pub struct TreeTraverser<'a> {
-    pub path: &'a str, // The starting path that Willow starts traversing from.
-    pub max_traversal_depth: u32, // The maximum traversal depth allowed.
+    pub root_path: PathBuf, // The starting path that Willow starts traversing from.
+    pub path: &'a str,      // The path of the current file being read during traversal.
+    pub max_traversal_depth: usize, // The maximum traversal depth allowed.
     pub current_traversal_depth: usize, // The current depth of the traversal at some point in time.
     pub accumulative_file_count: usize, // The total number of files found thus far.
     pub accumulative_dir_count: usize, // The total number of directories found thus far.
     pub format_specifier: &'a str, // Whether the program should print entries as paths.
 }
 
-// TODO:
-// 1. Iterate through wd and print files. DONE
-// 2. Return file count to main function. DONE
-// 3. Add accumulative_dir_count and count the directories found. DONE
-// 4. Make traverse() recursively traverse directories based on depth.
 impl<'a> TreeTraverser<'a> {
     pub fn new(
+        p_root_path: PathBuf,
         p_path: &'a str,
-        p_max_traversal_depth: u32,
+        p_max_traversal_depth: usize,
         p_current_traversal_depth: usize,
         p_accumulative_file_count: usize,
         p_accumulative_dir_count: usize,
         p_format_specifier: &'a str,
     ) -> TreeTraverser<'a> {
+        let root_path = p_root_path;
         let path = p_path;
         let max_traversal_depth = p_max_traversal_depth;
         let current_traversal_depth = p_current_traversal_depth;
@@ -34,6 +32,7 @@ impl<'a> TreeTraverser<'a> {
         let format_specifier = p_format_specifier;
 
         TreeTraverser {
+            root_path,
             path,
             max_traversal_depth,
             current_traversal_depth,
@@ -45,7 +44,10 @@ impl<'a> TreeTraverser<'a> {
 
     // Reads from the current path and traverses.
     // At the end of traversal, returns path.
-    pub fn traverse(&mut self, path: &Path) -> &str {
+
+    // TODO:
+    // Allow max depth to be defined in runtime args.
+    pub fn traverse(&mut self, path: &Path) {
         let entries = match fs::read_dir(path) {
             Ok(values) => values,
             Err(_) => panic!("The program was unable to read the file tree."),
@@ -56,6 +58,10 @@ impl<'a> TreeTraverser<'a> {
                 Ok(value) => value,
                 Err(_) => continue,
             };
+
+            self.current_traversal_depth =
+                entry.path().components().count() - self.root_path.components().count();
+
             let path = entry.path();
             let indent = "-".repeat(self.current_traversal_depth);
 
@@ -67,12 +73,12 @@ impl<'a> TreeTraverser<'a> {
 
             if path.is_dir() {
                 self.accumulative_dir_count += 1;
-                self.traverse(&path);
+                if self.current_traversal_depth < self.max_traversal_depth {
+                    self.traverse(&path);
+                }
             } else {
                 self.accumulative_file_count += 1;
             }
         }
-
-        self.path
     }
 }

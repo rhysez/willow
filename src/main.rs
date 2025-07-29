@@ -13,12 +13,14 @@ fn main() {
     // Shadow args with our new args struct instance.
     let args: Config = Config::new(&args);
 
-    let max_depth = 2;
+    let root = PathBuf::from(&args.path);
+    let max_depth = 3;
     let current_depth = 1;
     let acc_f_count = 0;
     let acc_d_count = 0;
 
     let mut tree_traverser = TreeTraverser::new(
+        root,
         &args.path,
         max_depth,
         current_depth,
