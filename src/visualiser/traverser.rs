@@ -1,5 +1,4 @@
 use std::fs;
-use std::path::Path;
 
 // Using string slices so that struct does not take ownership.
 // Also passing generic lifetime that origin_path and current_file_name share.
@@ -15,11 +14,8 @@ pub struct TreeTraverser<'a> {
 // TODO:
 // 1. Iterate through wd and print files. DONE
 // 2. Return file count to main function. DONE
-// 3. Add accumulative_dir_count and count the directories found.
-// 4. Iterate deeper into tree based on max_traversal_depth. This should
-// probably be done by defining the max traversal depth in the main function, removing
-// it from the struct, and instantiating a new TreeTraverser for each depth level.
-// This may remove the complexity required to handle the depth logic in traverse().
+// 3. Add accumulative_dir_count and count the directories found. DONE
+// 4. Make traverse() recursively traverse directories based on depth.
 impl<'a> TreeTraverser<'a> {
     pub fn new(
         p_path: &'a str,
@@ -46,7 +42,9 @@ impl<'a> TreeTraverser<'a> {
         }
     }
 
-    pub fn traverse(&mut self) {
+    // Reads from the current path and traverses.
+    // At the end of traversal, returns path.
+    pub fn traverse(&mut self) -> &str {
         let entries = fs::read_dir(self.path).unwrap();
         for entry in entries {
             let entry = entry.unwrap();
@@ -61,9 +59,13 @@ impl<'a> TreeTraverser<'a> {
 
             if path.is_dir() {
                 self.accumulative_dir_count += 1;
+                self.path = path.to_str().unwrap();
+                self.traverse();
             } else {
                 self.accumulative_file_count += 1;
             }
         }
+
+        self.path
     }
 }
