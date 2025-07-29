@@ -1,6 +1,7 @@
 use crate::visualiser::traverser::TreeTraverser;
 use config::Config;
 use std::env;
+use std::path::*;
 
 pub mod config;
 pub mod visualiser;
@@ -26,7 +27,7 @@ fn main() {
         &args.format_specifier,
     );
 
-    tree_traverser.traverse();
+    tree_traverser.traverse(Path::new(&args.path));
 
     println!(
         "Found {} files and {} directories while traversing.",

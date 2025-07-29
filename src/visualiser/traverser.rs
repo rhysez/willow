@@ -1,4 +1,5 @@
 use std::fs;
+use std::path::Path;
 
 // Using string slices so that struct does not take ownership.
 // Also passing generic lifetime that origin_path and current_file_name share.
@@ -44,10 +45,17 @@ impl<'a> TreeTraverser<'a> {
 
     // Reads from the current path and traverses.
     // At the end of traversal, returns path.
-    pub fn traverse(&mut self) -> &str {
-        let entries = fs::read_dir(self.path).unwrap();
+    pub fn traverse(&mut self, path: &Path) -> &str {
+        let entries = match fs::read_dir(path) {
+            Ok(values) => values,
+            Err(_) => panic!("The program was unable to read the file tree."),
+        };
+
         for entry in entries {
-            let entry = entry.unwrap();
+            let entry = match entry {
+                Ok(value) => value,
+                Err(_) => continue,
+            };
             let path = entry.path();
             let indent = "-".repeat(self.current_traversal_depth);
 
@@ -59,8 +67,7 @@ impl<'a> TreeTraverser<'a> {
 
             if path.is_dir() {
                 self.accumulative_dir_count += 1;
-                self.path = path.to_str().unwrap();
-                self.traverse();
+                self.traverse(&path);
             } else {
                 self.accumulative_file_count += 1;
             }
