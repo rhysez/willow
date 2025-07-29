@@ -47,6 +47,7 @@ impl<'a> TreeTraverser<'a> {
 
     // TODO:
     // Allow max depth to be defined in runtime args.
+    // Abort current loop iteration if entry is a dotfile.
     pub fn traverse(&mut self, path: &Path) {
         let entries = match fs::read_dir(path) {
             Ok(values) => values,
@@ -59,8 +60,9 @@ impl<'a> TreeTraverser<'a> {
                 Err(_) => continue,
             };
 
-            self.current_traversal_depth =
+            let current_depth =
                 entry.path().components().count() - self.root_path.components().count();
+            self.current_traversal_depth = current_depth;
 
             let path = entry.path();
             let indent = "-".repeat(self.current_traversal_depth);
