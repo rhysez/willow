@@ -21,7 +21,6 @@ fn main() {
 
     let mut tree_traverser = TreeTraverser::new(
         root,
-        &args.path,
         max_depth,
         current_depth,
         acc_f_count,

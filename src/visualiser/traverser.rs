@@ -4,19 +4,17 @@ use std::path::{Path, PathBuf};
 // Using string slices so that struct does not take ownership.
 // Also passing generic lifetime that origin_path and current_file_name share.
 pub struct TreeTraverser<'a> {
-    pub root_path: PathBuf, // The starting path that Willow starts traversing from.
-    pub path: &'a str,      // The path of the current file being read during traversal.
+    root_path: PathBuf, // The starting path that Willow starts traversing from.
     pub max_traversal_depth: usize, // The maximum traversal depth allowed.
-    pub current_traversal_depth: usize, // The current depth of the traversal at some point in time.
+    current_traversal_depth: usize, // The current depth of the traversal at some point in time.
     pub accumulative_file_count: usize, // The total number of files found thus far.
     pub accumulative_dir_count: usize, // The total number of directories found thus far.
-    pub format_specifier: &'a str, // Whether the program should print entries as paths.
+    format_specifier: &'a str, // Whether the program should print entries as paths.
 }
 
 impl<'a> TreeTraverser<'a> {
     pub fn new(
         p_root_path: PathBuf,
-        p_path: &'a str,
         p_max_traversal_depth: usize,
         p_current_traversal_depth: usize,
         p_accumulative_file_count: usize,
@@ -24,7 +22,6 @@ impl<'a> TreeTraverser<'a> {
         p_format_specifier: &'a str,
     ) -> TreeTraverser<'a> {
         let root_path = p_root_path;
-        let path = p_path;
         let max_traversal_depth = p_max_traversal_depth;
         let current_traversal_depth = p_current_traversal_depth;
         let accumulative_file_count = p_accumulative_file_count;
@@ -33,7 +30,6 @@ impl<'a> TreeTraverser<'a> {
 
         TreeTraverser {
             root_path,
-            path,
             max_traversal_depth,
             current_traversal_depth,
             accumulative_file_count,
