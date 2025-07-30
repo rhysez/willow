@@ -1,4 +1,4 @@
-use std::fs;
+use std::fs::{self, DirEntry};
 use std::path::{Path, PathBuf};
 
 // Using string slices so that struct does not take ownership.
@@ -42,17 +42,40 @@ impl<'a> TreeTraverser<'a> {
         }
     }
 
-    // Reads from the current path and traverses.
-    // At the end of traversal, returns path.
+    fn get_entries(&self, path: &Path) -> std::fs::ReadDir {
+        match fs::read_dir(path) {
+            Ok(values) => values,
+            Err(_) => panic!("The program was unable to read the file tree."),
+        }
+    }
+
+    fn calculate_and_assign_depth(&mut self, entry: &DirEntry) -> usize {
+        let depth = entry.path().components().count() - self.root_path.components().count();
+        self.current_traversal_depth = depth;
+
+        self.current_traversal_depth
+    }
+
+    fn format_leaf(&self, entry: &DirEntry) {
+        let indent: String = "-".repeat(self.current_traversal_depth);
+
+        if self.format_specifier == "--paths" {
+            println!("|{}{}", indent, entry.path().display());
+        } else {
+            println!("|{}{}", indent, entry.file_name().display());
+        }
+    }
+
+    fn can_traverse_next_depth_level(&self) -> bool {
+        self.current_traversal_depth < self.max_traversal_depth
+    }
 
     // TODO:
     // Allow max depth to be defined in runtime args.
     // Abort current loop iteration if entry is a dotfile.
+    // Abstract some logic into private functions.
     pub fn traverse(&mut self, path: &Path) {
-        let entries = match fs::read_dir(path) {
-            Ok(values) => values,
-            Err(_) => panic!("The program was unable to read the file tree."),
-        };
+        let entries = self.get_entries(path);
 
         for entry in entries {
             let entry = match entry {
@@ -60,22 +83,13 @@ impl<'a> TreeTraverser<'a> {
                 Err(_) => continue,
             };
 
-            let current_depth =
-                entry.path().components().count() - self.root_path.components().count();
-            self.current_traversal_depth = current_depth;
+            self.calculate_and_assign_depth(&entry);
+            self.format_leaf(&entry);
 
             let path = entry.path();
-            let indent = "-".repeat(self.current_traversal_depth);
-
-            if self.format_specifier == "--paths" {
-                println!("|{}{}", indent, entry.path().display());
-            } else {
-                println!("|{}{}", indent, entry.file_name().display());
-            }
-
             if path.is_dir() {
                 self.accumulative_dir_count += 1;
-                if self.current_traversal_depth < self.max_traversal_depth {
+                if self.can_traverse_next_depth_level() {
                     self.traverse(&path);
                 }
             } else {
