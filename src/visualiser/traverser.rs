@@ -56,13 +56,15 @@ impl<'a> TreeTraverser<'a> {
         self.current_traversal_depth
     }
 
-    fn format_leaf(&self, entry: &DirEntry) {
-        let indent: String = "-".repeat(self.current_traversal_depth);
+    fn format_leaf(&self, entry: &DirEntry, path: &Path) {
+        let indent: String = " ".repeat(self.current_traversal_depth);
 
         if self.format_specifier == "--paths" {
-            println!("|{}{}", indent, entry.path().display());
+            println!("{}|-{}", indent, entry.path().display());
+        } else if path.is_dir() {
+            println!("{}|-{}/", indent, entry.file_name().display());
         } else {
-            println!("|{}{}", indent, entry.file_name().display());
+            println!("{}|-{}", indent, entry.file_name().display());
         }
     }
 
@@ -72,8 +74,6 @@ impl<'a> TreeTraverser<'a> {
 
     // TODO:
     // Allow max depth to be defined in runtime args.
-    // Abort current loop iteration if entry is a dotfile.
-    // Abstract some logic into private functions.
     pub fn traverse(&mut self, path: &Path) {
         let entries = self.get_entries(path);
 
@@ -83,10 +83,20 @@ impl<'a> TreeTraverser<'a> {
                 Err(_) => continue,
             };
 
-            self.calculate_and_assign_depth(&entry);
-            self.format_leaf(&entry);
-
             let path = entry.path();
+            let file_name = match entry.file_name().into_string() {
+                Ok(string) => string,
+                Err(_) => continue,
+            };
+
+            // Skip dotfiles
+            if file_name.starts_with(".") {
+                continue;
+            }
+
+            self.calculate_and_assign_depth(&entry);
+            self.format_leaf(&entry, &path);
+
             if path.is_dir() {
                 self.accumulative_dir_count += 1;
                 if self.can_traverse_next_depth_level() {

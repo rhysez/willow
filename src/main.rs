@@ -14,8 +14,8 @@ fn main() {
     let args: Config = Config::new(&args);
 
     let root = PathBuf::from(&args.path);
-    let max_depth = 3;
-    let current_depth = 1;
+    let max_depth = 2;
+    let current_depth = 0;
     let acc_f_count = 0;
     let acc_d_count = 0;
 
@@ -32,7 +32,7 @@ fn main() {
     tree_traverser.traverse(Path::new(&args.path));
 
     println!(
-        "Found {} files and {} directories while traversing.",
+        "Found {} files and {} directories in this tree.",
         &tree_traverser.accumulative_file_count, &tree_traverser.accumulative_dir_count
     );
 }
