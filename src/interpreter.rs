@@ -69,7 +69,6 @@ impl<'a> TreeInterpreter<'a> {
     }
 
     // TODO:
-    // Allow max depth to be defined in runtime args.
     // Use traits somehow.
     // Add some tests.
     pub fn traverse(&mut self, path: &Path) {
