@@ -6,6 +6,10 @@ use std::path::*;
 pub mod config;
 pub mod interpreter;
 
+const DEPTH_INITIAL: usize = 0;
+const ACC_FILE_COUNT: usize = 0;
+const ACC_DIR_COUNT: usize = 0;
+
 fn main() {
     // Using .collect() to create a collection of the iterator values in args.
     // Annotating as a vector to tell Rust that we want to store these in a vector.
@@ -14,24 +18,21 @@ fn main() {
     let args: Config = Config::new(&args);
 
     let root = PathBuf::from(&args.path);
-    let max_depth = 2;
-    let current_depth = 0;
-    let acc_f_count = 0;
-    let acc_d_count = 0;
+    let max_depth = args.max_traversal_depth;
 
-    let mut tree_traverser = TreeInterpreter::new(
+    let mut interpreter = TreeInterpreter::new(
         root,
         max_depth,
-        current_depth,
-        acc_f_count,
-        acc_d_count,
+        DEPTH_INITIAL,
+        ACC_FILE_COUNT,
+        ACC_DIR_COUNT,
         &args.format_specifier,
     );
 
-    tree_traverser.traverse(Path::new(&args.path));
+    interpreter.traverse(Path::new(&args.path));
 
     println!(
         "Found {} files and {} directories in this tree.",
-        &tree_traverser.accumulative_file_count, &tree_traverser.accumulative_dir_count
+        &interpreter.accumulative_file_count, &interpreter.accumulative_dir_count
     );
 }

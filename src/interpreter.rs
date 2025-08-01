@@ -38,7 +38,7 @@ impl<'a> TreeInterpreter<'a> {
         }
     }
 
-    fn get_entries(&self, path: &Path) -> std::fs::ReadDir {
+    pub fn get_entries(&self, path: &Path) -> std::fs::ReadDir {
         match fs::read_dir(path) {
             Ok(values) => values,
             Err(_) => panic!("The program was unable to read the file tree."),
@@ -64,12 +64,14 @@ impl<'a> TreeInterpreter<'a> {
         }
     }
 
-    fn can_traverse_next_depth_level(&self) -> bool {
+    pub fn can_traverse_next_depth_level(&self) -> bool {
         self.current_traversal_depth < self.max_traversal_depth
     }
 
     // TODO:
     // Allow max depth to be defined in runtime args.
+    // Use traits somehow.
+    // Add some tests.
     pub fn traverse(&mut self, path: &Path) {
         let entries = self.get_entries(path);
 
