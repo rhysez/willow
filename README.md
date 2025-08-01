@@ -1,8 +1,8 @@
 Willow is a UNIX file tree interpreter and visualiser for your terminal.
 
-In more understandable language - Willow takes a path to a directory, and then scans your entire file tree at that level, as well as dropping to lower layers of your file tree if you so specify.
+In more understandable language - Willow takes a path to a directory, and then scans your entire file tree at that level, as well as dropping to lower layers of your file tree if you so specify. It tells you exactly how many files and directories it found, and prints a tree-like representation of your file tree. 
 
-This allows you to get a fast visual of your file tree at multiple layers without needing to run `ls` in multiple different directories.
+This allows you to get a fast visual of your file tree at multiple layers without needing to run `ls` in multiple different locations.
 
 This program was inspired by the linux CLI tool 'tree'.
 
