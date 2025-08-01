@@ -1,10 +1,10 @@
-use crate::visualiser::traverser::TreeTraverser;
 use config::Config;
+use interpreter::TreeInterpreter;
 use std::env;
 use std::path::*;
 
 pub mod config;
-pub mod visualiser;
+pub mod interpreter;
 
 fn main() {
     // Using .collect() to create a collection of the iterator values in args.
@@ -19,7 +19,7 @@ fn main() {
     let acc_f_count = 0;
     let acc_d_count = 0;
 
-    let mut tree_traverser = TreeTraverser::new(
+    let mut tree_traverser = TreeInterpreter::new(
         root,
         max_depth,
         current_depth,
