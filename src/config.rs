@@ -52,3 +52,26 @@ impl Config {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn can_instantiate_config_with_args() {
+        let args = vec![
+            String::from("bin_placeholder"),
+            String::from("./"),
+            String::from("--names"),
+            String::from("2"),
+        ];
+        let cfg = Config::new(&args);
+        assert_eq!(cfg.path, "./");
+    }
+
+    #[test]
+    #[should_panic]
+    fn bad_config_panics() {
+        let args = vec![String::from("bin_placeholder"), String::from("./")];
+        let cfg = Config::new(&args);
+    }
+}
