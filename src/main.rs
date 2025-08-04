@@ -3,9 +3,6 @@ use std::path::*;
 use willow::config::Config;
 use willow::interpreter::TreeInterpreter;
 
-pub mod config;
-pub mod interpreter;
-
 const DEPTH_INITIAL: usize = 0;
 const ACC_FILE_COUNT: usize = 0;
 const ACC_DIR_COUNT: usize = 0;

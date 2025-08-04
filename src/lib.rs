@@ -11,7 +11,8 @@ pub mod config {
     impl Config {
         pub fn new(args: &[String]) -> Config {
             if args.len() < MIN_ARG_COUNT_BINARY {
-                panic!("Insufficient arguments. Provide at least 2 arguments.");
+                eprintln!("Insufficient arguments. Provide at least 2 arguments.");
+                std::process::exit(1);
             }
 
             let mut path = String::from("./");
@@ -40,9 +41,10 @@ pub mod config {
             if let Some(value) = args.get(max_traversal_depth_index) {
                 max_traversal_depth = match value.parse::<usize>() {
                     Ok(num) => num,
-                    Err(_) => panic!(
-                        "There was an error whileattempting to process the provided depth level."
-                    ),
+                    Err(_) => {
+                        eprintln!("There was an error while trying to read at the provided depth.");
+                        std::process::exit(1);
+                    }
                 }
             }
 
@@ -67,13 +69,6 @@ pub mod config {
             ];
             let cfg = Config::new(&args);
             assert_eq!(cfg.path, "./");
-        }
-
-        #[test]
-        #[should_panic(expected = "Insufficient arguments. Provide at least 2 arguments.")]
-        fn bad_config_panics() {
-            let args = vec![String::from("bin_placeholder"), String::from("./")];
-            Config::new(&args);
         }
     }
 }
@@ -123,7 +118,10 @@ pub mod interpreter {
         pub fn get_entries(&self, path: &Path) -> std::fs::ReadDir {
             match fs::read_dir(path) {
                 Ok(values) => values,
-                Err(_) => panic!("The program was unable to read the file tree."),
+                Err(_) => {
+                    eprintln!("The program was unable to read the file tree.");
+                    std::process::exit(1);
+                }
             }
         }
 
