@@ -20,7 +20,7 @@ fn main() {
     let root = PathBuf::from(&args.path);
     let max_depth = args.max_traversal_depth;
 
-    let mut interpreter = TreeInterpreter::new(
+    let interpreter = TreeInterpreter::new(
         root,
         max_depth,
         DEPTH_INITIAL,
@@ -29,10 +29,14 @@ fn main() {
         &args.format_specifier,
     );
 
-    interpreter.traverse(Path::new(&args.path));
+    run(Path::new(&args.path), interpreter)
+}
+
+fn run(path: &Path, mut interpreter: TreeInterpreter) {
+    interpreter.traverse(path);
 
     println!(
         "Found {} files and {} directories in this tree.",
-        &interpreter.accumulative_file_count, &interpreter.accumulative_dir_count
+        interpreter.accumulative_file_count, interpreter.accumulative_dir_count
     );
 }

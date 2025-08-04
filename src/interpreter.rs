@@ -68,9 +68,6 @@ impl<'a> TreeInterpreter<'a> {
         self.current_traversal_depth < self.max_traversal_depth
     }
 
-    // TODO:
-    // Use traits somehow.
-    // Add some tests.
     pub fn traverse(&mut self, path: &Path) {
         let entries = self.get_entries(path);
 
