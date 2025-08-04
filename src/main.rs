@@ -1,7 +1,7 @@
-use config::Config;
-use interpreter::TreeInterpreter;
 use std::env;
 use std::path::*;
+use willow::config::Config;
+use willow::interpreter::TreeInterpreter;
 
 pub mod config;
 pub mod interpreter;
@@ -29,14 +29,5 @@ fn main() {
         &args.format_specifier,
     );
 
-    run(Path::new(&args.path), interpreter)
-}
-
-fn run(path: &Path, mut interpreter: TreeInterpreter) {
-    interpreter.traverse(path);
-
-    println!(
-        "Found {} files and {} directories in this tree.",
-        interpreter.accumulative_file_count, interpreter.accumulative_dir_count
-    );
+    willow::runner::run(Path::new(&args.path), interpreter)
 }
