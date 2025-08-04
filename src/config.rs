@@ -5,12 +5,12 @@ pub struct Config {
 }
 
 const MIN_ARG_COUNT_BINARY: usize = 3;
-const MIN_ARG_COUNT_ACTUAL: usize = MIN_ARG_COUNT_BINARY - 1;
+// const MIN_ARG_COUNT_ACTUAL: usize = MIN_ARG_COUNT_BINARY - 1;
 
 impl Config {
     pub fn new(args: &[String]) -> Config {
         if args.len() < MIN_ARG_COUNT_BINARY {
-            panic!("Insufficient arguments. Provide at least {MIN_ARG_COUNT_ACTUAL} arguments.");
+            panic!("Insufficient arguments. Provide at least 2 arguments.");
         }
 
         let mut path = String::from("./");
@@ -69,9 +69,9 @@ mod tests {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "Insufficient arguments. Provide at least 2 arguments.")]
     fn bad_config_panics() {
         let args = vec![String::from("bin_placeholder"), String::from("./")];
-        let cfg = Config::new(&args);
+        Config::new(&args);
     }
 }
